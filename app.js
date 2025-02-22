@@ -1,63 +1,23 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
-const config = require('./config');
 
 const app = express();
+app.use(cors()); // Allows requests from any frontend
+app.use(express.json()); // Parses JSON bodies
 
-// 🛠️ Apply Security Settings
-const corsOptions = {
-    origin: '*', // Allow requests from any origin
-    methods: ['GET', 'POST'], // Allowed methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
-    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
-};
-
-if (config.security.allowCors) app.use(cors(corsOptions)); // Enable CORS if allowed
-app.use(express.json({ limit: config.security.maxBodySize })); // Limit request body size
-
-// 📜 Logging Function
-const logRequest = async (ip, method, url) => {
-    if (!config.logging.enabled) return; // Skip logging if disabled
-
-    const logData = {
-        ip,
-        method,
-        url,
-        timestamp: new Date().toISOString(),
-    };
-
-    // 🖥️ Console Logging (if enabled)
-    if (config.logging.logToConsole) console.log("Request Log:", logData);
-
-    // 🌐 Discord Webhook Logging (if enabled)
-    if (config.logging.webhookUrl) {
-        try {
-            await axios.post(config.logging.webhookUrl, {
-                embeds: [
-                    {
-                        title: config.logging.discordEmbed.title,
-                        description: `**IP:** ${logData.ip}\n**Method:** ${logData.method}\n**URL:** ${logData.url}\n**Timestamp:** ${logData.timestamp}`,
-                        color: config.logging.discordEmbed.color,
-                    },
-                ],
-            });
-        } catch (err) {
-            console.error("❌ Failed to send log to Discord:", err.message);
-        }
-    }
-};
-
-// 🔄 Proxy Route
 app.post('/proxy', async (req, res) => {
     try {
         const { method, url, headers, body } = req.body;
-        const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-
-        logRequest(clientIp, method, url); // Log the request
 
         // Forward the request using Axios
-        const response = await axios({ method, url, headers, data: body || undefined });
+        const response = await axios({
+            method,
+            url,
+            headers,
+            data: body || undefined, // Ensure no empty bodies for GET requests
+        });
+
         res.json(response.data);
     } catch (error) {
         res.status(error.response?.status || 500).json({
@@ -67,5 +27,4 @@ app.post('/proxy', async (req, res) => {
     }
 });
 
-// 🚀 Start the Server
-app.listen(config.server.port, () => console.log(`✅ Proxy server running on port ${config.server.port}`));
+app.listen(3000, () => console.log("Proxy server running on port 3000"));
