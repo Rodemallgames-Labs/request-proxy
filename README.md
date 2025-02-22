@@ -1,4 +1,11 @@
-# Note: This is still under development
+
+
+# License Notice
+
+**This project is currently private and not available for public use. Unauthorized use, reproduction, or distribution is prohibited.**
+
+For any inquiries or potential collaboration, please contact [hello@rodemallgames.com].
+
 
 
 # Proxy Server
