@@ -11,8 +11,13 @@ app.use(express.json());
 
 const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
 
+const getClientIp = (req) => {
+    return req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress;
+};
+
 const logRequest = async (req) => {
-    const logEntry = `${new Date().toISOString()} - IP: ${req.ip} - Method: ${req.body.method} - URL: ${req.body.url}`;
+    const clientIp = getClientIp(req);
+    const logEntry = `${new Date().toISOString()} - IP: ${clientIp} - Method: ${req.body.method} - URL: ${req.body.url}`;
     
     // Save to local log file
     fs.appendFile(path.join(__dirname, 'requests.log'), logEntry + '\n', (err) => {
