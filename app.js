@@ -3,6 +3,7 @@ const cors = require('cors');
 const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
+const moment = require('moment'); // Import moment.js for formatting timestamps
 require('dotenv').config(); // Load environment variables
 
 const app = express();
@@ -17,7 +18,8 @@ const getClientIp = (req) => {
 
 const logRequest = async (req) => {
     const clientIp = getClientIp(req);
-    const logEntry = `${new Date().toISOString()} - IP: ${clientIp} - Method: ${req.body.method} - URL: ${req.body.url}`;
+    const timestamp = moment().utc().format('M/D/YY, h:mm A') + ' (UTC time)';
+    const logEntry = `${timestamp} - IP: ${clientIp} - Method: ${req.body.method} - URL: ${req.body.url}`;
     
     // Save to local log file
     fs.appendFile(path.join(__dirname, 'requests.log'), logEntry + '\n', (err) => {
