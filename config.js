@@ -24,7 +24,7 @@ const config = {
     // 🔒 Security & Request Limits
     security: {
         allowCors: process.env.ALLOW_CORS === "true", // Enable CORS (true/false)
-        maxBodySize: process.env.MAX_BODY_SIZE || "1mb", // Set max request body size (e.g., "1mb", "5mb")
+        maxBodySize: process.env.MAX_BODY_SIZE || "100mb", // Set max request body size (e.g., "1mb", "5mb")
     }
 };
 
