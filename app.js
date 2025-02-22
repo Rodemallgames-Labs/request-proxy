@@ -6,7 +6,14 @@ const config = require('./config');
 const app = express();
 
 // 🛠️ Apply Security Settings
-if (config.security.allowCors) app.use(cors()); // Enable CORS if allowed
+const corsOptions = {
+    origin: '*', // Allow requests from any origin
+    methods: ['GET', 'POST'], // Allowed methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
+    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+};
+
+if (config.security.allowCors) app.use(cors(corsOptions)); // Enable CORS if allowed
 app.use(express.json({ limit: config.security.maxBodySize })); // Limit request body size
 
 // 📜 Logging Function
