@@ -42,18 +42,38 @@ app.post('/proxy', async (req, res) => {
     logRequest(req); // Log request details
 
     try {
-        const { method, url, headers, body } = req.body;
+        const { method, url, headers, params, body, contentType, authHeader } = req.body;
 
-        // Forward the request using Axios
-        const response = await axios({
+        if (!url || !method) {
+            return res.status(400).json({ error: "URL and method are required" });
+        }
+
+        let finalHeaders = headers || {};
+
+        // Add Authorization header if provided
+        if (authHeader) {
+            finalHeaders["Authorization"] = authHeader;
+        }
+
+        // Set Content-Type if provided
+        if (contentType) {
+            finalHeaders["Content-Type"] = contentType;
+        }
+
+        // Construct the request options
+        const options = {
             method,
             url,
-            headers,
+            headers: finalHeaders,
+            params: params || {},
             data: body || undefined,
-        });
+        };
 
-        res.json(response.data);
+        // Make the external API request
+        const response = await axios(options);
+        res.status(response.status).json(response.data);
     } catch (error) {
+        console.error("API request error:", error.message);
         res.status(error.response?.status || 500).json({
             error: error.message,
             details: error.response?.data || null
