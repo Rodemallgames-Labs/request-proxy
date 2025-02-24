@@ -15,7 +15,7 @@ const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
 
 const limiter = rateLimit({
     windowMs: 1 * 60 * 1000, // 1 minute
-    max: 60, // only 60 requests per minute
+    max: 20, // only 20 requests per minute
     message: { error: "Too many requests, please try again later." },
     standardHeaders: true, // Returns rate limit info in headers
     legacyHeaders: false, // Disable X-RateLimit headers
