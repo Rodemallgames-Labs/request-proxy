@@ -39,7 +39,7 @@ const logRequest = async (req) => {
 };
 
 app.post('/proxy', async (req, res) => {
-    logRequest(req); // Log request details
+    await logRequest(req); // Log request details
 
     try {
         const { method, url, headers, params, body, contentType, authHeader } = req.body;
