@@ -15,8 +15,8 @@ app.use(express.json());
 const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
 
 const limiter = rateLimit({
-    windowMs: 10000, 
-    max: 15, 
+    windowMs: 1000, 
+    max: 5, 
     message: { error: "Too many requests, please try again later." },
     standardHeaders: true, // Returns rate limit info in headers
     legacyHeaders: false, // Disable X-RateLimit headers
