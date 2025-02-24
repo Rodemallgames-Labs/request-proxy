@@ -12,6 +12,16 @@ app.use(express.json());
 
 const DISCORD_WEBHOOK_URL = process.env.DISCORD_WEBHOOK_URL;
 
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000, // 1 minute
+    max: 60, // only 60 requests per minute
+    message: { error: "Too many requests, please try again later." },
+    standardHeaders: true, // Returns rate limit info in headers
+    legacyHeaders: false, // Disable X-RateLimit headers
+});
+
+app.use('/proxy', limiter); // ✅ Apply rate limiting to proxy endpoint
+
 const getClientIp = (req) => {
     return req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress;
 };
