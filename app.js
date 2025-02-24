@@ -8,6 +8,7 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config(); // Load environment variables
 
 const app = express();
+app.set('trust proxy', 1); // Trust proxy to get real IPs
 app.use(cors());
 app.use(express.json());
 
