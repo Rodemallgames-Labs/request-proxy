@@ -22,6 +22,10 @@ const limiter = rateLimit({
     legacyHeaders: false, // Disable X-RateLimit headers
 });
 
+app.get('/', (req, res) => {
+  res.send('Proxy server is running!');
+});
+
 app.use('/proxy', limiter); // ✅ Apply rate limiting to proxy endpoint
 
 const getClientIp = (req) => {
